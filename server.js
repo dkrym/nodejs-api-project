@@ -4,6 +4,7 @@ const dotenv = require('dotenv'); // env variables
 const morgan = require('morgan'); // logging
 const colors = require('colors'); // colors for console
 const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db'); // mongoDB connection
 
@@ -16,11 +17,14 @@ connectDB();
 // Route files
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
-
+const auth = require('./routes/auth');
 const app = express();
 
 // Body parser
 app.use(express.json());
+
+// Cookie parser
+app.use(cookieParser());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -37,6 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routers in /api/v1/xxx format
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
 
 app.use(errorHandler); // has to be after bootcamps so we can use it in it
 
